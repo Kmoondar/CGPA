@@ -8,14 +8,15 @@
 #include <map>
 
 class GradeConverter {
-public:
+private:
     std::map<std::string, double> gradeMap;
+
+public:
     void parseGrades(const std::string& filename) {
         std::ifstream file(filename); // Open the file
-        std::map<std::string, double> gradeMap;
 
         if (!file.is_open()) {
-            std::cerr << "Error opening file." << std::endl;
+            std::cerr << "Error opening file: " << filename << std::endl;
             return;
         }
 
@@ -23,23 +24,35 @@ public:
         while (std::getline(file, line)) {
             std::istringstream iss(line);
             std::string grade;
+            char equal;
             double value;
 
-            if (!(iss >> grade >> value)) { // Read the grade and value from the line
+            if (!(iss >> grade >> equal >> value)) { // Read the grade and value from the line
                 std::cerr << "Error parsing line: " << line << std::endl;
                 continue;
             }
-            std::cout << grade << " " << value << std::endl;
+
             gradeMap[grade] = value; // Store the grade and its value in the map
         }
 
         file.close(); // Close the file
     }
 
-    double getGrade(std::string &grade) {
-        return gradeMap[grade];
+    double getGrade(const std::string &grade) const {
+        auto it = gradeMap.find(grade);
+        if (it != gradeMap.end()) {
+            return it->second;
+        } else {
+            std::cerr << "Grade not found: " << grade << std::endl;
+            return 0.0;
+        }
     }
 
+    void printMap() const {
+        for(const auto& entry: gradeMap) {
+            std::cout << entry.first << " = " << entry.second << "\n";
+        }
+    }
 };
 
 #endif //CGPA_GRADE_CONVERTER_H

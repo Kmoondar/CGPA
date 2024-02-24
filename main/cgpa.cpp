@@ -1,35 +1,55 @@
 #include <iostream>
 #include <vector>
-#include <map>
+#include <iomanip>
 #include "grade_converter.h"
 
 using namespace std;
 
+int num_courses;
+vector<string> courses;
+vector<double> grades;
+vector<int> credits;
 
-int main() {
-    //Number of courses student has
-    cout << "Number of courses you have: ";
-    int num_courses;
-    cin >> num_courses;
-    cout << "\n";
-
-    cout << "Below please insert names of the courses, their grades and number of credits\n";
-    vector<string> courses(num_courses);
-    vector<double> grades(num_courses);
-    vector<int> credits(num_courses);
+void grade_information() {
     GradeConverter converter;
+    converter.parseGrades("main/grades.txt");
+
+    cout << "Number of courses you have: ";
+    cin >> num_courses;
+    courses.resize(num_courses);
+    grades.resize(num_courses);
+    credits.resize(num_courses);
+
+    cout << "\nBelow please insert names of the courses, their grades and number of credits\n";
     for(int i=0; i<num_courses; i++) {
-        cout << "Course name " << i+1 << ": ";
+        cout << "\nCourse name " << i+1 << ": ";
         cin >> courses[i];
-        cout<<"Grade for " << courses[i] << ": ";
+        cout<<"\nGrade for " << courses[i] << ": ";
         string grade;
         cin >> grade;
         grades[i] = converter.getGrade(grade);
-        cout<<"Number of credits: ";
+        cout<<"\nNumber of credits: ";
         cin >> credits[i];
     }
-    cout <<"list of grades\n";
-    for(auto e: grades) {
-        cout << e << endl;
-    }
 }
+
+double caclulate_CGPA() {
+    double total_grade_point = 0.0;
+    int total_credit_hours = 0;
+
+    for(int i=0; i<num_courses; i++) {
+        total_grade_point+=(grades[i]*credits[i]);
+        total_credit_hours+=credits[i];
+    }
+
+    return total_grade_point/total_credit_hours;
+}
+
+int main() {
+    grade_information();
+    //calculation code
+    double CGPA = caclulate_CGPA();
+    cout << fixed << setprecision(2);
+    cout << "\nYour cumulative grade point average is: " << CGPA;
+}
+
