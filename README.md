@@ -1,2 +1,2 @@
 # CGPA
-CGPA is a calculator, that calculates cumulative grade point average of a student
+This program calculates cumulative grade point avarage of a student based on his grades and number of credits
